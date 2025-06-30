@@ -1,0 +1,71 @@
+<!-- contact.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="styles.css">
+  <title>Contact</title>
+  <script>
+    function saveFeedback(event) {
+      event.preventDefault();
+      const name = document.getElementById("name").value;
+      const comment = document.getElementById("comment").value;
+      const feedback = { name, comment };
+      let stored = localStorage.getItem("feedbacks");
+      let feedbacks = stored ? JSON.parse(stored) : [];
+      feedbacks.push(feedback);
+      localStorage.setItem("feedbacks", JSON.stringify(feedbacks));
+      displayFeedbacks();
+    }
+
+    function displayFeedbacks() {
+      const container = document.getElementById("feedbackList");
+      container.innerHTML = "";
+      const feedbacks = JSON.parse(localStorage.getItem("feedbacks")) || [];
+      feedbacks.forEach(fb => {
+        const div = document.createElement("div");
+        div.textContent = `${fb.name}: ${fb.comment}`;
+        container.appendChild(div);
+      });
+    }
+
+    window.onload = displayFeedbacks;
+  </script>
+</head>
+<body>
+  <header>
+    <h1>Contact Me</h1>
+    <nav>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="projects.html">Projects</a></li>
+        <li><a href="location.html">Location</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+  <main>
+    <section>
+      <h2>Feedback Form</h2>
+      <form onsubmit="saveFeedback(event)">
+        <label for="name">Name:</label>
+        <input type="text" id="name" required>
+        <br>
+        <label for="comment">Comment:</label>
+        <textarea id="comment" required></textarea>
+        <br>
+        <button type="submit">Submit</button>
+      </form>
+    </section>
+    <section>
+      <h2>Previous Feedback</h2>
+      <div id="feedbackList"></div>
+    </section>
+  </main>
+  <footer>
+    <p>&copy; 2025 Samuel Shine | Date: June 28, 2025</p>
+  </footer>
+</body>
+</html>
