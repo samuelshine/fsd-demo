@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        function getEvenNumbers(arr){
+            filt_arr = [];
+            for (i in arr){
+                if(arr[i] % 2 == 0){
+                    filt_arr.push(arr[i]);
+                }
+            }
+            return filt_arr;
+        }
+
+        const arr = [1, 22, 3, 45, 5, 6, 7, 8, 9, 10];
+        const evenNumbers = getEvenNumbers(arr);
+        document.write("Even numbers: " + evenNumbers);
+    </script>
+</body>
+</html>
