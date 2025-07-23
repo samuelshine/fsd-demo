@@ -1,0 +1,104 @@
+<!--Design a form using semantic HTML and Tailwind CSS with the following fields:
+
+Full Name, Email, Domain-specific Field (e.g., "Course" for education, "Symptoms" for healthcare, or "Product Category" for e-commerce)
+A group of checkboxes or radio buttons (e.g., Preferred time, Service level, or Feedback type)
+
+When the user submits the form, use JavaScript to:
+
+Prevent the default behavior.
+Retrieve all values using querySelector and querySelectorAll.
+Display the captured information below the form in a styled box.
+Apply Tailwind CSS for the layout and style of both form and displayed output.
+Use at least one custom CSS class to highlight selected checkboxes/radio labels when clicked.
+
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <title>Education Feedback Form</title>
+  <style>
+    .highlighted {
+      background-color: #f0f9ff;
+      border: 2px solid #60a5fa;
+    }
+  </style>
+  <script>
+    function handleSubmit(event) {
+      event.preventDefault();
+      const fullName = document.querySelector("#fullName").value;
+      const email = document.querySelector("#email").value;
+      const course = document.querySelector("#course").value;
+      const comments = document.querySelector("#comments").value;
+      const radios = document.querySelectorAll("input[name='feedbackType']:checked");
+      const selectedFeedback = Array.from(radios).map(r => r.value);
+
+      const output = `
+        <p><strong>Full Name:</strong> ${fullName}</p>
+        <p><strong>Email:</strong> ${email}</p>
+        <p><strong>Course:</strong> ${course}</p>
+        <p><strong>Feedback Type:</strong> ${selectedFeedback.join(", ")}</p>
+        <p><strong>Comments:</strong> ${comments}</p>
+      `;
+      document.querySelector("#output").innerHTML = output;
+    }
+
+    window.onload = function() {
+      // Highlight selected radio label
+      document.querySelectorAll("input[name='feedbackType']").forEach(input => {
+        input.addEventListener('change', function(e) {
+          document.querySelectorAll("label.radio-label").forEach(label => label.classList.remove('highlighted'));
+          if (e.target.checked) {
+            e.target.closest('label').classList.add('highlighted');
+          }
+        });
+      });
+    };
+  </script>
+</head>
+<body class="bg-gray-800 p-6">
+  <div class="max-w-lg mx-auto bg-white p-6 rounded-lg shadow-md">
+    <h1 class="text-2xl font-bold mb-4">Education Feedback Form</h1>
+    <form onsubmit="handleSubmit(event)">
+      <div class="mb-4">
+        <label for="fullName" class="block text-sm font-medium text-gray-700">Full Name</label>
+        <input type="text" id="fullName" class="mt-1 block w-full p-2 border border-gray-300 rounded-md" required>
+      </div>
+      <div class="mb-4">
+        <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+        <input type="email" id="email" class="mt-1 block w-full p-2 border border-gray-300 rounded-md" required>
+      </div>
+      <div class="mb-4">
+        <label for="course" class="block text-sm font-medium text-gray-700">Course</label>
+        <input type="text" id="course" class="mt-1 block w-full p-2 border border-gray-300 rounded-md" required>
+      </div>
+      <div class="mb-4">
+        <label for="comments" class="block text-sm font-medium text-gray-700">Comments</label>
+        <textarea id="comments" class="mt-1 block w-full p-2 border border-gray-300 rounded-md" rows="3" placeholder="Your comments..."></textarea>
+      </div>
+      <fieldset class="mb-4">
+        <legend class="text-sm font-medium text-gray-700">Feedback Type</legend>
+        <div class="mt-2 space-y-2">
+          <label class="radio-label inline-flex items-center space-x-2 cursor-pointer p-2 rounded">
+            <input type="radio" name="feedbackType" value="Course Content" class="form-radio">
+            <span>Course Content</span>
+          </label>
+          <label class="radio-label inline-flex items-center space-x-2 cursor-pointer p-2 rounded">
+            <input type="radio" name="feedbackType" value="Teaching Quality" class="form-radio">
+            <span>Teaching Quality</span>
+          </label>
+          <label class="radio-label inline-flex items-center space-x-2 cursor-pointer p-2 rounded">
+            <input type="radio" name="feedbackType" value="Facilities" class="form-radio">
+            <span>Facilities</span>
+          </label>
+        </div>
+      </fieldset>
+      <button type="submit" class="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600">Submit</button>
+    </form>
+    <div id="output" class="mt-6 p-4 bg-gray-50 rounded-md shadow-inner"></div>
+  </div>
+</body>
+</html>

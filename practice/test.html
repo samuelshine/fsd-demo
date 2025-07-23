@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta viewport="width=device-width, initial-scale=1.0">
+        <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+        <title>Test Page</title>
+    </head>
+    <body>
+        <h1>This is a heading</h1>
+        <div class="flex flex-col-reverse items-center space-x-5 justify-stretch bg-black">
+            <div class="flex justify-center h-40 w-40 bg-red-100 items-center">
+                <p>1</p>
+            </div>
+            <div class="h-40 w-40 bg-red-100">2</div>
+            <div class="h-40 w-40 bg-red-100">3</div>
+        </div>
+        <div class="nav-loc">
+            <p class="lat"></p>
+            <p class="long"></p>
+        </div>
+        <div class="grid grid-cols-3">
+            <div class="h-40 w-40 bg-red-100">1</div>
+            <div class="h-40 w-40 bg-red-100">2</div>
+            <div class="h-40 w-40 bg-red-100">3</div>
+            <div class="h-40 w-40 bg-red-100">4</div>
+            <div class="h-40 w-40 bg-red-100">5</div>
+            <div class="h-40 w-40 bg-red-100">6</div>
+
+        </div>
+        <input type="text" id="title" placeholder="Search by title..." class="text-black px-4 py-1 rounded w-64" />
+        <div class="flex justify-center gap-4 my-4">
+            <select id="sortTitle" class="px-3 py-1 rounded">
+            <option value="">Sort by Title</option>
+            <option value="az">A - Z</option>
+            <option value="za">Z - A</option>
+            </select>
+
+            <select id="sortPrice" class="px-3 py-1 rounded">
+            <option value="">Sort by Price</option>
+            <option value="low">Low to High</option>
+            <option value="high">High to Low</option>
+            </select>
+        </div>
+        <div id="fetch-prods" class="grid grid-cols-3"></div>
+    </body>
+    <script>
+        const sortTitle = document.querySelector('#sortTitle');
+        const sortPrice = document.querySelector('#sortPrice');
+        const input = document.querySelector('#title');
+
+        if(navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(showPosition);
+        }
+        else{
+            document.querySelector('.nav-loc').innerText = "Location is not support by your browser";
+        }
+        function showPosition(position){
+            var lat = position.coords.latitude;
+            var long = position.coords.longitude;
+            document.querySelector('.lat').innerText = "Lattude: " + lat;
+            document.querySelector('.long').innerText = "Longitude: " + long;
+            document.querySelector('.nav-loc'.style.display = "flex");
+
+        }
+
+        const container = document.querySelector('#fetch-prods');
+
+        fetch("https://dummyjson.com/products") 
+            .then(response => response.json())
+            .then(data => {
+                productsArray = data.products;
+                displayProducts(productsArray);
+            });
+
+        function displayProducts(products) {
+            container.innerHTML = '';
+            products.forEach( product => {
+                const card = document.createElement('div');
+                card.className = "bg-white p-4 rounded shadow w-60 text-center hover:scale-105 transition-transform";
+                card.innerHTML = `
+                <img src="${product.images[0]}" alt="${product.title}" class="h-40 w-full object-contain mb-2 rounded" />
+                <h2 class="text-sm font-semibold h-12 overflow-hidden">${product.title}</h2>
+                <p class="text-gray-600 font-medium">₹${product.price}</p>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        
+        input.addEventListener('input', () => {
+            filterAndSort();
+            });
+
+        sortTitle.addEventListener('change', () => {
+        filterAndSort();
+        });
+
+        sortPrice.addEventListener('change', () => {
+        filterAndSort();
+        });
+
+        function filterAndSort() {
+            console.log("Hi");
+            let filtered = [...productsArray];
+            const keyword = input.value.toLowerCase();
+            if(keyword) {
+                filtered = filtered.filter(p => p.title.toLowerCase().includes(keyword));
+            }
+
+            const titleSort = sortTitle.value;
+            if (titleSort === 'az') {
+                filtered.sort((a, b) => a.title.localeCompare(b.title));
+            }
+            else if (titleSort === 'za') {
+                filtered.sort((a, b) => b.title.localeCompare(a.title));
+            }
+
+            const priceSort = sortPrice.value;
+            if (priceSort === 'low') {
+                filtered.sort((a,b) => a.price - b.price);
+            } else if(priceSort === 'high') {
+                filtered.sort((a,b) => b.price - a.price);
+            }
+
+            displayProducts(filtered);
+        }
+    </script>
+</html>
