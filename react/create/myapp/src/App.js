@@ -8,7 +8,7 @@ import CopilotLogo from './images/copilot.png';
 function App() {
   return (
     <div className="App">
-      <div className="text-lg text-center font-extrabold font-sans">
+      <div className="text-4xl text-center font-extrabold font-sans">
         Personal Digital Assistants
         <div className="flex flex-wrap justify-center gap-4">
           <Card image={AppleIntelligenceLogo} title={"Apple Intelligence"} handle={"@apple"}/>
